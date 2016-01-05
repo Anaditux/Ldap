@@ -4,8 +4,9 @@ import javax.naming.directory.*;
 import java.util.Hashtable;
 
 /**
- * User: gmc
- * Date: 16/02/11
+ * Input: LDAP Filter is hard coded as of now
+ * Output: LDAP Search result for particular User
+ * Dependencies*-Public Ldap server
  */
 public class speed {
 
