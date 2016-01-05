@@ -14,14 +14,17 @@ public class Lspeed {
 	public static void main(String[] args) {
         @SuppressWarnings("rawtypes")
         NamingEnumeration results = null;
+        // Hard Coded information
+        String dn="uid=jwoodnh,ou=People,dc=umich,dc=edu";
+        String lserver="ldap://ldap.itd.umich.edu";
         try {
         	//proobj of Lprop class will be used for establishing LDAP interaction and Test 
         	Lprop proobj=new Lprop();
         	//Creating a Context object for getting LDAP Connection values
         	Context ctx=null;
-            ctx = proobj.getLDAPconn();
+            ctx = proobj.getLDAPconn(lserver);      
+            proobj.doDnTest(dn,lserver);
             
-            proobj.doDnTest("uid=jwoodnh,ou=People,dc=umich,dc=edu");
             SearchControls controls = new SearchControls();
             controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             results = ((DirContext) ctx).search("", "(&(cn=Jame*) (sn=Woodw*))", controls);
@@ -30,7 +33,7 @@ public class Lspeed {
                 Attributes attributes = searchResult.getAttributes();
                 Attribute attr = attributes.get("cn");
                 String cn = (String) attr.get();
-                System.out.println(" Person Common Name = " + attributes.get("cn"));
+                System.out.println(" Person Common Name = " + attributes.get("displayName"));
                 
             }
         } catch (Throwable e) {
