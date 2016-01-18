@@ -2,32 +2,39 @@ import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.*;
 import java.util.Hashtable;
-
 /**
  * Input: LDAP Filter is hard coded as of now
  * Output: LDAP Search result for particular User
  * Dependencies*-Public Ldap server
  */
 public class Lspeed {
-
-    @SuppressWarnings("unchecked")
+    String dn,lserver;
+    //Constructor initializes default values
+	Lspeed(){
+		dn="uid=jwoodnh,ou=People,dc=umich,dc=edu";
+        lserver="ldap://ldap.itd.umich.edu";     
+	}
+	Lspeed(String userdn,String userlserver){
+		dn=userdn;
+		lserver=userlserver;		
+	}
+	
 	public static void main(String[] args) {
-        @SuppressWarnings("rawtypes")
+        
         NamingEnumeration results = null;
         // Hard Coded information
-        String dn="uid=jwoodnh,ou=People,dc=umich,dc=edu";
-        String lserver="ldap://ldap.itd.umich.edu";
+        
+        Lspeed ldpobj=new Lspeed();
+        
         try {
         	//proobj of Lprop class will be used for establishing LDAP interaction and Test 
         	Lprop proobj=new Lprop();
         	//Creating a Context object for getting LDAP Connection values
         	Context ctx=null;
-            ctx = proobj.getLDAPconn(lserver);      
-            proobj.doDnTest(dn,lserver);
-            
-            SearchControls controls = new SearchControls();
-            controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            results = ((DirContext) ctx).search("", "(&(cn=Jame*) (sn=Woodw*))", controls);
+            ctx = proobj.getLDAPconn(ldpobj.lserver);
+            String filter=Lprop.setFilter("(&(cn=Jame*) (sn=Woodw*))");
+            proobj.doDnTest(ldpobj.dn,ldpobj.lserver);
+            results=proobj.getLdata(ctx, filter);
             while (results.hasMore()) {
                 SearchResult searchResult = (SearchResult) results.next();
                 Attributes attributes = searchResult.getAttributes();
@@ -39,11 +46,12 @@ public class Lspeed {
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
-            if (results != null) {
-                try {
+          if (results != null) {
+          try {
                     results.close();
-                } catch (Exception e) {
-                }
+               } catch (Exception e) {
+                 System.out.println("Closure of Result");
+               }
             }
            
             }

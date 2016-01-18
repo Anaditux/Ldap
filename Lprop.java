@@ -7,7 +7,7 @@ import java.util.Vector;
 /*Lprop Class is used for Establishing LDAP bind and performing LDAP operations. It is master 
  *Class for Search LDAP and Test LDAP operations
  */
-public class Lprop {
+public class Lprop extends Lspeed {
 	// Getting Connection for LDAP
 	public DirContext getLDAPconn(String lserver) throws Exception{
 		Hashtable<String,String> env = new Hashtable<String,String>();
@@ -17,7 +17,16 @@ public class Lprop {
         ctx = new InitialDirContext(env);
         return ctx;
 	}
-	
+	public static String setFilter(String filter){
+		return filter;
+	}
+	public NamingEnumeration getLdata(Context ctx,String filter) throws Exception{
+	 NamingEnumeration results=null;
+     SearchControls controls = new SearchControls();
+     controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+     results = ((DirContext) ctx).search("", filter, controls);
+     return results;
+	}
 	/* doDnTest() passes DN to LDAP and tests is applicability, Object return type False means dn
 	 * is applied Successfully
 	 */
